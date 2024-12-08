@@ -1,71 +1,75 @@
---[[
-    Название: MVP Hub
-    Описание: Простой интерфейс с авто-фармом для Blox Fruits
-    Автор: Ваше имя
-    Версия: 1.0
-]]
+-- Подключаем библиотеку Rayfield
+local Rayfield = loadstring(game:HttpGet("https://raw.githubusercontent.com/Heise-RBLX/Rayfield/main/source.lua"))()
 
--- Секретные настройки, которые могут быть полезны для пользователя
-local settings = {
-    autoFarmEnabled = true,
-    levelTarget = 100,
-    farmSpeed = 1
-}
+-- Создаем окно с названием
+local Window = Rayfield:CreateWindow({
+    Name = "MVP Hub", -- Название окна
+    LoadingTitle = "Загрузка", -- Заголовок при загрузке
+    LoadingSubtitle = "Загрузка меню...", -- Подзаголовок при загрузке
+    ConfigurationSaving = {
+        Enabled = true, -- Включаем сохранение настроек
+        FolderName = nil, -- Можно указать имя папки для сохранения настроек
+        FileName = "MVPHubSettings" -- Название файла с настройками
+    },
+    Discord = {
+        Enabled = false, -- Включить или выключить Discord
+        Invite = "https://discord.gg/xxxxxx", -- Ссылка на Discord
+        RememberJoins = false -- Запоминать ли входы
+    },
+    KeySystem = false, -- Использование системы ключей
+    Key = "mvpkey" -- Ваш ключ
+})
 
--- Функция для отображения окна с меню
-local function createMenu()
-    local ScreenGui = Instance.new("ScreenGui")
-    local frame = Instance.new("Frame")
-    
-    -- Настройка внешнего вида окна
-    ScreenGui.Name = "MVP Hub"
-    ScreenGui.Parent = game.CoreGui
+-- Создание вкладки
+local Tab = Window:CreateTab("Основное", 4483362458) -- Имя вкладки
 
-    frame.Name = "MainFrame"
-    frame.Size = UDim2.new(0, 300, 0, 400)
-    frame.Position = UDim2.new(0.5, -150, 0.5, -200)
-    frame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-    frame.BorderSizePixel = 0
-    frame.Parent = ScreenGui
-    
-    -- Настроим кнопку для включения/выключения авто-фарма
-    local farmButton = Instance.new("TextButton")
-    farmButton.Size = UDim2.new(0, 260, 0, 50)
-    farmButton.Position = UDim2.new(0, 20, 0, 20)
-    farmButton.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
-    farmButton.Text = "Включить авто-фарм"
-    farmButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-    farmButton.Parent = frame
+-- Кнопка для включения автофарама
+Tab:CreateButton({
+    Name = "Авто Фарм Левел", -- Название кнопки
+    Callback = function()
+        print("Авто фарм левел включен!")
+        -- Здесь ваш код для автофарма уровня
+    end
+})
 
-    -- Функция для переключения авто-фарма
-    farmButton.MouseButton1Click:Connect(function()
-        settings.autoFarmEnabled = not settings.autoFarmEnabled
-        if settings.autoFarmEnabled then
-            farmButton.Text = "Отключить авто-фарм"
-            -- Запуск авто-фарма
-            startAutoFarm()
+-- Кнопка для включения автофарма босса
+Tab:CreateButton({
+    Name = "Авто Фарм Босса", -- Название кнопки
+    Callback = function()
+        print("Авто фарм босса включен!")
+        -- Ваш код для автофарма босса
+    end
+})
+
+-- Создание переключателя (Toggle) для включения/выключения автофарма
+Tab:CreateToggle({
+    Name = "Авто Фарм", -- Название переключателя
+    CurrentValue = false, -- Стартовое значение
+    Callback = function(value)
+        if value then
+            print("Авто фарм включен!")
+            -- Здесь код включения автофарма
         else
-            farmButton.Text = "Включить авто-фарм"
-            -- Остановка авто-фарма
-            stopAutoFarm()
+            print("Авто фарм выключен!")
+            -- Здесь код выключения автофарма
         end
-    end)
-end
+    end
+})
 
--- Функция для старта авто-фарма
-local function startAutoFarm()
-    print("Авто-фарм активирован!")
-    -- Логика авто-фарма: можно добавить действия, чтобы фармить
-end
+-- Ползунок для настройки скорости фарма
+Tab:CreateSlider({
+    Name = "Скорость Фарма", -- Название ползунка
+    Range = {1, 100}, -- Диапазон значений
+    Increment = 1, -- Шаг
+    CurrentValue = 50, -- Начальное значение
+    Callback = function(value)
+        print("Скорость фарма: " .. value)
+        -- Используйте значение для изменения скорости фарма
+    end
+})
 
--- Функция для остановки авто-фарма
-local function stopAutoFarm()
-    print("Авто-фарм отключен.")
-    -- Логика остановки фарма
-end
+-- Окно с текстом или информацией
+Tab:CreateLabel("Информация о скрипте: MVP Hub") -- Можете добавить любую информацию
 
--- Инициализация
-createMenu()
-
--- Дополнительная настройка и использование
-print("Добро пожаловать в MVP Hub!")
+-- Завершаем создание интерфейса
+Rayfield:LoadConfiguration()
